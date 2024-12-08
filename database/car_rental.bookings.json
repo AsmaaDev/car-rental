@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6753f857da2a445a65d5f3f8"
+  },
+  "userId": {
+    "$oid": "6752939d2b8758dc980734b3"
+  },
+  "vehicleId": {
+    "$oid": "674f38bb76642841b9a85fed"
+  },
+  "startDate": "2024-12-01T10:00:00Z",
+  "endDate": "2024-12-05T10:00:00Z",
+  "totalPrice": 200,
+  "createdAt": {
+    "$date": "2024-12-01T09:00:00.000Z"
+  }
+}]

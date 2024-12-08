@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "6752939d2b8758dc980734b3"
+  },
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "$2a$10$5.EIZ8A2tO5bRQ39xjw9vON0bp3.nHYwF7dOhoPsyFbqpYlFO9U3G",
+  "role": "admin",
+  "isActive": true
+},
+{
+  "_id": {
+    "$oid": "6752939d2b8758dc980734b4"
+  },
+  "name": "Jane Smith",
+  "email": "jane.smith@example.com",
+  "password": "$2a$10$5.EIZ8A2tO5bRQ39xjw9vON0bp3.nHYwF7dOhoPsyFbqpYlFO9U3G",
+  "role": "customer",
+  "isActive": true
+},
+{
+  "_id": {
+    "$oid": "6752939d2b8758dc980734b5"
+  },
+  "name": "Robert Brown",
+  "email": "robert.brown@example.com",
+  "password": "$2a$10$5.EIZ8A2tO5bRQ39xjw9vON0bp3.nHYwF7dOhoPsyFbqpYlFO9U3G",
+  "role": "customer",
+  "isActive": false
+},
+{
+  "_id": {
+    "$oid": "6752939d2b8758dc980734b6"
+  },
+  "name": "Admin",
+  "email": "admin@example.com",
+  "password": "12345678",
+  "role": "admin",
+  "isActive": true
+}]

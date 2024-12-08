@@ -1,0 +1,66 @@
+[{
+  "_id": {
+    "$oid": "675404596ac2db2c5d754efe"
+  },
+  "make": "test",
+  "model": "test",
+  "year": 2019,
+  "pricePerDay": 300,
+  "availability": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6754048a6ac2db2c5d754f00"
+  },
+  "make": "test",
+  "model": "test",
+  "year": 2019,
+  "pricePerDay": 20,
+  "availability": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67540ac40ce4eecdb5044c28"
+  },
+  "make": "test2",
+  "model": "test2",
+  "year": 2019,
+  "pricePerDay": 200,
+  "availability": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67540dae2106cb6890a7f6b8"
+  },
+  "make": "Honda",
+  "model": "Civic\t",
+  "year": 2021,
+  "pricePerDay": 50,
+  "availability": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67540dbc2106cb6890a7f6ba"
+  },
+  "make": "Ford\t",
+  "model": "Focus\t",
+  "year": 2020,
+  "pricePerDay": 60,
+  "availability": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67540ddb2106cb6890a7f6bc"
+  },
+  "make": "Audi",
+  "model": "Civic",
+  "year": 2021,
+  "pricePerDay": 90,
+  "availability": true,
+  "__v": 0
+}]
