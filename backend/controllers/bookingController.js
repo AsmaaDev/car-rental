@@ -1,18 +1,17 @@
 const Booking = require('../models/Booking');
 const Vehicle = require('../models/Vehicle');
 
-
 // List bookings
 exports.listReservations = async (req, res) => {
     try {
       const bookings = await Booking.find(); // Fetch all bookings
-      res.status(200).json({ message: 'bookings fetched successfully', bookings });
+      res.status(200).json({ message: 'Bookings fetched successfully', bookings });
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch bookings', error: error.message });
     }
 };
 
-//create
+// Create Reservation
 exports.createReservation = async (req, res) => {
   try {
     const { vehicleId, customerId, rentalDates } = req.body;
@@ -36,18 +35,14 @@ exports.createReservation = async (req, res) => {
       return res.status(400).json({ message: 'Vehicle not found' });
     }
 
-    console.log("Vehicle Data:", vehicle); // Debugging line to check the full vehicle data
-
     if (!vehicle.availability) {
       return res.status(400).json({ message: 'Vehicle not available for reservation' });
     }
 
     // Ensure vehicle rental price exists and is valid
-    if (!vehicle.rental_price || isNaN(vehicle.rental_price)) {
+    if (!vehicle.pricePerDay || isNaN(vehicle.pricePerDay)) {
       return res.status(400).json({ message: 'Invalid rental price for vehicle' });
     }
-
-    console.log("Vehicle Rental Price:", vehicle.rental_price);  // Debugging line
 
     // Ensure the start date is before the end date
     if (startDate >= endDate) {
@@ -74,22 +69,19 @@ exports.createReservation = async (req, res) => {
     }
 
     // Calculate total price
-    const totalPrice = rentalDuration * vehicle.rental_price;
-
-    // Debugging line: check if totalPrice is valid
-    console.log("Total Price:", totalPrice);
+    const totalPrice = rentalDuration * vehicle.pricePerDay;
 
     if (isNaN(totalPrice) || totalPrice <= 0) {
       return res.status(400).json({ message: 'Invalid total price calculation' });
     }
 
     // Create new booking
-    const newBooking = new Booking({ 
-      userId: customerId, 
-      vehicleId, 
-      startDate, 
-      endDate, 
-      totalPrice 
+    const newBooking = new Booking({
+      userId: customerId,
+      vehicleId,
+      startDate,
+      endDate,
+      totalPrice
     });
 
     // Save the booking
@@ -101,12 +93,10 @@ exports.createReservation = async (req, res) => {
 
     res.status(201).json({ message: 'Reservation created successfully', booking: newBooking });
   } catch (error) {
-    console.error(error);  // Log the full error for debugging
+    console.error(error);
     res.status(500).json({ message: 'Failed to create reservation', error: error.message });
   }
 };
-
-
 
 // Update Reservation
 exports.updateReservation = async (req, res) => {
@@ -114,6 +104,7 @@ exports.updateReservation = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
+    // Find the booking by ID and update
     const updatedBooking = await Booking.findByIdAndUpdate(id, updates, { new: true });
     if (!updatedBooking) {
       return res.status(404).json({ message: 'Reservation not found' });
