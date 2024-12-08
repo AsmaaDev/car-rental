@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from './website/Header';
 import Footer from './website/Footer';
-import defaultVehicleImage from '../assets/default-vehicle.jpg';
+import defaultVehicleImage from '../assets/default-vehicle.webp';
 import '../assets/home.css';  
 
 function HomePage() {
