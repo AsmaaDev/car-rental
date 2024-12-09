@@ -13,8 +13,6 @@ const PORT = process.env.PORT || 5000;
 
 // Database Connection
 mongoose.connect('mongodb://localhost:27017/car_rental', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 }).then(() => console.log('Database connected')).catch(err => console.error(err));
 
 // API Routes
