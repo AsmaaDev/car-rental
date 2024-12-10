@@ -1,7 +1,10 @@
+const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const app = express();
 
 // User registration
+
 exports.register = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -37,28 +40,41 @@ exports.register = async (req, res) => {
 };
 
 // User login
-exports.login = async (req, res) => {
+app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    // Compare the hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    // Directly compare the password (not recommended, but as per your request)
+    if (password !== user.password) {
       return res.status(404).json({ message: 'Password is wrong' });
     }
+    res.json({ role: user.role });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    // Send userId and role as response
-    res.json({
-      role: user.role,
-      userId: user._id,
-    });
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    // Directly compare the password (not recommended, but as per your request)
+    if (password !== user.password) {
+      return res.status(404).json({ message: 'Password is wrong' });
+    }
+    // If credentials are correct, send role (you can also send token here if needed)
+    res.json({ role: user.role });
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
