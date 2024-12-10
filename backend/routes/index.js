@@ -8,7 +8,11 @@ const router = express.Router();
 // users Routes
 
 router.post('/login', authController.login);
+router.post('/register', authController.register);
 router.get('/users', userController.listUsers);
+router.get('/user-profile/:userId', userController.fetchUserProfile);
+router.put('/update-profile/:userId', userController.updateUserProfile);
+
 router.post('/user-bookings', userController.listUserBookings);
 
 // Vehicle Routes

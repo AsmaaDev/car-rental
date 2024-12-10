@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';  // Import useNavigate for redir
 import Header from './website/Header';
 import Footer from './website/Footer';
 import defaultVehicleImage from '../assets/default-vehicle.webp';
-import '../assets/home.css';
+import '../assets/home.css'; // You can still use some custom styles if necessary
 
 function HomePage() {
   const [vehicles, setVehicles] = useState([]);
@@ -90,24 +90,26 @@ function HomePage() {
   return (
     <>
       <Header />
-      <main>
-        <h2 className="main-title">Available Vehicles</h2>
-        <div className="car-list">
+      <main className="container py-5">
+        <h2 className="main-title mb-4">Available Vehicles</h2>
+        <div className="row">
           {vehicles.length > 0 ? (
             vehicles.map((vehicle) => (
-              <div className="car-card" key={vehicle._id}>
-                <img
-                  src={vehicle.image || defaultVehicleImage}
-                  alt={`${vehicle.make} ${vehicle.model}`}
-                  className="car-image"
-                />
-                <div className="car-details">
-                  <h3>{vehicle.make}/{vehicle.model}</h3>
-                  <p><strong>Year:</strong> {vehicle.year}</p>
-                  <p><strong>Price Per Day:</strong> {vehicle.pricePerDay} USD</p>
-                  <button className="book-now-btn" onClick={() => handleOpenModal(vehicle)}>
-                    Book Now
-                  </button>
+              <div className="col-md-4 mb-4" key={vehicle._id}>
+                <div className="card">
+                  <img
+                    src={vehicle.image || defaultVehicleImage}
+                    alt={`${vehicle.make} ${vehicle.model}`}
+                    className="card-img-top"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{vehicle.make}/{vehicle.model}</h5>
+                    <p><strong>Year:</strong> {vehicle.year}</p>
+                    <p><strong>Price Per Day:</strong> {vehicle.pricePerDay} USD</p>
+                    <button className="btn btn-primary" onClick={() => handleOpenModal(vehicle)}>
+                      Book Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -119,27 +121,38 @@ function HomePage() {
 
       {/* Booking Modal */}
       {isModalOpen && (
-        <div className={`modal ${isModalOpen ? 'open' : ''}`}>
-          <div className="modal-content">
-            <h3>Book {selectedCar?.make} {selectedCar?.model}</h3>
-            <label>
-              Start Date:
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </label>
-            <label>
-              End Date:
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </label>
-            <button onClick={handleBooking}>Confirm Booking</button>
-            <button onClick={handleCloseModal}>Cancel</button>
+        <div className={`modal fade show`} style={{ display: 'block' }} aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Book {selectedCar?.make} {selectedCar?.model}</h5>
+                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Start Date:</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">End Date:</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                <button className="btn btn-primary" onClick={handleBooking}>Confirm Booking</button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -1,68 +1,63 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-// Use CORS middleware
-app.use(cors({
-  origin: 'http://localhost:3000',  // Allow frontend to access the backend
-  methods: ['GET', 'POST'],        // Allow specific methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers
-}));
-
-// Your login route
-app.post('/api/login', async (req, res) => {
+// User registration
+exports.register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Directly compare the password (not recommended, but as per your request)
-    if (password !== user.password) {
-      return res.status(404).json({ message: 'Password is wrong' });
-    }
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Send userId along with the role
-    res.json({
-      role: user.role,
-      userId: user._id, 
+    // Create new user
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+      role
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Respond with the user data
+    res.status(201).json({
+      message: 'User registered successfully',
+      userId: newUser._id,
+      role: newUser.role,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
 
-app.post('/api/logout', (req, res) => {
-  // Assuming you are using express-session
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Failed to log out' });
-    }
-    res.json({ message: 'Logged out successfully' });
-  });
-});
-
+// User login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find the user by email
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Directly compare the password (not recommended, but as per your request)
-    if (password !== user.password) {
+    // Compare the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(404).json({ message: 'Password is wrong' });
     }
 
-    // If credentials are correct, send role (you can also send token here if needed)
-    res.json({ role: user.role, userId: user._id });
-    
+    // Send userId and role as response
+    res.json({
+      role: user.role,
+      userId: user._id,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
