@@ -88,7 +88,10 @@ app.post('/api/login', async (req, res) => {
     if (password !== user.password) {
       return res.status(404).json({ message: 'Password is wrong' });
     }
-    res.json({ role: user.role });
+    res.json({
+      role: user.role,
+      userId: user._id, 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -108,8 +111,10 @@ exports.login = async (req, res) => {
       return res.status(404).json({ message: 'Password is wrong' });
     }
     // If credentials are correct, send role (you can also send token here if needed)
-    res.json({ role: user.role });
-    
+    res.json({
+      role: user.role,
+      userId: user._id, 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
