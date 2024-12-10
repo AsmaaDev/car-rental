@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate for redirection
 import Header from './website/Header';
 import Footer from './website/Footer';
 import defaultVehicleImage from '../assets/default-vehicle.webp';
-import '../assets/home.css';  
+import '../assets/home.css';
 
 function HomePage() {
   const [vehicles, setVehicles] = useState([]);
@@ -11,12 +12,14 @@ function HomePage() {
   const [selectedCar, setSelectedCar] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const navigate = useNavigate();  // Initialize navigate for redirection
 
   useEffect(() => {
     // Fetch vehicles from API
     const fetchVehicles = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/vehicles');
+        console.log('Fetched vehicles:', response.data.vehicles);  // Log vehicles data
         setVehicles(response.data.vehicles);
       } catch (error) {
         console.error('Error fetching vehicles:', error);
@@ -27,37 +30,56 @@ function HomePage() {
   }, []);
 
   const handleBooking = async () => {
+    console.log('Booking vehicle:', selectedCar);  // Log selected car details
+  
+    // Check if user is logged in by verifying localStorage data
+    const userRole = localStorage.getItem('role');
+    const userId = localStorage.getItem('userId');
+    console.log('User Role:', userRole, 'User ID:', userId);  // Log user data
+  
+    if (!userRole || !userId) {
+      localStorage.setItem('from', window.location.pathname);  // Save the current route
+      alert('You need to log in to make a booking.');
+      console.log('User not logged in');
+      navigate('/login');  // Redirect to the login page if the user is not logged in
+      return;
+    }
+  
     if (!startDate || !endDate) {
       alert("Please select both start and end dates.");
       return;
     }
-
+  
     try {
-      // Send request to create a booking
+      // Log the data before sending the request
+      console.log('Sending booking request:', {
+        vehicleId: selectedCar._id,
+        customerId: userId,
+        rentalDates: { startDate, endDate }
+      });
+  
       const response = await axios.post('http://localhost:5000/api/bookings', {
         vehicleId: selectedCar._id,  // Vehicle ID for the booking
-        customerId: selectedCar.userId,  // Assuming selectedCar has a userId
-        rentalDates: {
-          startDate,
-          endDate
-        }
+        customerId: userId,  // Use logged in user's ID
+        rentalDates: { startDate, endDate }
       });
-      
+  
+      console.log('Booking response:', response);  // Log response from backend
       alert('Car booked successfully!');
       setIsModalOpen(false);  // Close modal after successful booking
     } catch (error) {
-      // Check if the error has a response and display the backend message
+      console.error('Error booking car:', error);
       if (error.response && error.response.data) {
         alert(error.response.data.message || 'Error booking car. Please try again.');
       } else {
         alert('Error booking car. Please try again.');
       }
-      console.error('Error booking car:', error);
     }
   };
 
   const handleOpenModal = (vehicle) => {
-    setSelectedCar(vehicle);
+    console.log('Opening modal for vehicle:', vehicle);  // Log vehicle data
+    setSelectedCar(vehicle);  // Set the selected car
     setIsModalOpen(true);  // Open the modal
   };
 
@@ -73,14 +95,13 @@ function HomePage() {
         <div className="car-list">
           {vehicles.length > 0 ? (
             vehicles.map((vehicle) => (
-              <div className="car-card" key={vehicle.id}>
+              <div className="car-card" key={vehicle._id}>
                 <img
                   src={vehicle.image || defaultVehicleImage}
                   alt={`${vehicle.make} ${vehicle.model}`}
                   className="car-image"
                 />
                 <div className="car-details">
-                  <h3></h3>
                   <h3>{vehicle.make}/{vehicle.model}</h3>
                   <p><strong>Year:</strong> {vehicle.year}</p>
                   <p><strong>Price Per Day:</strong> {vehicle.pricePerDay} USD</p>
@@ -98,7 +119,7 @@ function HomePage() {
 
       {/* Booking Modal */}
       {isModalOpen && (
-        <div className="modal">
+        <div className={`modal ${isModalOpen ? 'open' : ''}`}>
           <div className="modal-content">
             <h3>Book {selectedCar?.make} {selectedCar?.model}</h3>
             <label>

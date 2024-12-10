@@ -58,8 +58,7 @@ function AdminDashboard() {
 
       <div className="main-content">
         <Routes>
-          <Route path="/" element={<><h1>Website</h1><p>Welcome to the car rental</p></>} />
-          <Route path="/admin/" element={<><h1>Home</h1><p>Welcome to the Admin Dashboard</p></>} />
+           <Route path="/admin/" element={<><h1>Home</h1><p>Welcome to the Admin Dashboard</p></>} />
           <Route path="/admin/vehicles" element={<><h2>Vehicles</h2><VehicleList vehicles={vehicles} /></>} />
           <Route path="/admin/users" element={
             <>

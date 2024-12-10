@@ -25,10 +25,24 @@ app.post('/api/login', async (req, res) => {
       return res.status(404).json({ message: 'Password is wrong' });
     }
 
-    res.json({ role: user.role });
+    // Send userId along with the role
+    res.json({
+      role: user.role,
+      userId: user._id, 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post('/api/logout', (req, res) => {
+  // Assuming you are using express-session
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Failed to log out' });
+    }
+    res.json({ message: 'Logged out successfully' });
+  });
 });
 
 exports.login = async (req, res) => {
@@ -47,7 +61,7 @@ exports.login = async (req, res) => {
     }
 
     // If credentials are correct, send role (you can also send token here if needed)
-    res.json({ role: user.role });
+    res.json({ role: user.role, userId: user._id });
     
   } catch (error) {
     res.status(500).json({ error: error.message });

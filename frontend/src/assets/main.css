@@ -72,9 +72,7 @@ header nav ul li a:hover {
   background-color: #34495e;
 }
 
-.sidebar .nav-link.active {
-  background-color: #1abc9c;
-}
+
 
 .sidebar-footer {
   position: absolute;
@@ -325,4 +323,8 @@ footer {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.nav-link.active {
+  font-weight: bold;
+  color: #007bff; /* Optional active link color */
 }

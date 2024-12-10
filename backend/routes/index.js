@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/login', authController.login);
 router.get('/users', userController.listUsers);
+router.post('/user-bookings', userController.listUserBookings);
 
 // Vehicle Routes
 router.get('/vehicles', vehicleController.listVehicles); 
@@ -20,6 +21,6 @@ router.delete('/vehicles/:id', vehicleController.removeVehicle);
 router.get('/bookings', bookingController.listReservations); 
 router.post('/bookings', bookingController.createReservation);
 router.put('/bookings/:id', bookingController.updateReservation);
-router.delete('/bookings/:id', bookingController.cancelReservation);
+router.put('/cancel-booking/:id', bookingController.cancelReservation);
 
 module.exports = router;

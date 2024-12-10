@@ -99,25 +99,86 @@ exports.createReservation = async (req, res) => {
 };
 
 // Update Reservation
+// Update Reservation
 exports.updateReservation = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
 
-    // Find the booking by ID and update
-    const updatedBooking = await Booking.findByIdAndUpdate(id, updates, { new: true });
-    if (!updatedBooking) {
-      return res.status(404).json({ message: 'Reservation not found' });
-    }
+    // Validate startDate and endDate if they are being updated
+    if (updates.startDate || updates.endDate) {
+      const startDate = new Date(updates.startDate || updates.startDate); // Ensure startDate exists
+      const endDate = new Date(updates.endDate || updates.endDate); // Ensure endDate exists
 
-    res.status(200).json({ message: 'Reservation updated successfully', booking: updatedBooking });
+      if (isNaN(startDate) || isNaN(endDate)) {
+        return res.status(400).json({ message: 'Invalid start or end date format' });
+      }
+
+      // Ensure the start date is before the end date
+      if (startDate >= endDate) {
+        return res.status(400).json({ message: 'Start date must be before end date' });
+      }
+
+      // Check for overlapping bookings with the same vehicle
+      const booking = await Booking.findById(id);
+      if (!booking) {
+        return res.status(404).json({ message: 'Reservation not found' });
+      }
+
+      const overlappingBookings = await Booking.find({
+        vehicleId: booking.vehicleId,
+        _id: { $ne: id }, // Exclude the current booking
+        $or: [
+          { startDate: { $lte: endDate }, endDate: { $gte: startDate } }
+        ]
+      });
+
+      if (overlappingBookings.length > 0) {
+        return res.status(400).json({ message: 'Vehicle is already booked for the selected dates' });
+      }
+
+      // Calculate the rental duration in days
+      const rentalDuration = (endDate - startDate) / (1000 * 60 * 60 * 24); // in days
+
+      if (rentalDuration <= 0) {
+        return res.status(400).json({ message: 'Invalid rental dates' });
+      }
+
+      // Calculate total price
+      const vehicle = await Vehicle.findById(booking.vehicleId);
+      const totalPrice = rentalDuration * vehicle.pricePerDay;
+
+      if (isNaN(totalPrice) || totalPrice <= 0) {
+        return res.status(400).json({ message: 'Invalid total price calculation' });
+      }
+
+      // Update the booking with the new dates and total price
+      const updatedBooking = await Booking.findByIdAndUpdate(id, {
+        ...updates,
+        totalPrice,
+        startDate,
+        endDate
+      }, { new: true });
+
+      res.status(200).json({ message: 'Reservation updated successfully', booking: updatedBooking });
+    } else {
+      // If no date update, simply proceed with the provided updates
+      const updatedBooking = await Booking.findByIdAndUpdate(id, updates, { new: true });
+
+      if (!updatedBooking) {
+        return res.status(404).json({ message: 'Reservation not found' });
+      }
+
+      res.status(200).json({ message: 'Reservation updated successfully', booking: updatedBooking });
+    }
   } catch (error) {
     res.status(500).json({ message: 'Failed to update reservation', error: error.message });
   }
 };
 
+
 // Cancel Reservation
-exports.cancelReservation = async (req, res) => {
+ exports.cancelReservation = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -136,7 +197,7 @@ exports.cancelReservation = async (req, res) => {
     // Delete the booking
     await Booking.findByIdAndDelete(id);
 
-    res.status(200).json({ message: 'Reservation canceled successfully' });
+    res.status(200).json({ message: 'Reservation canceled successfully', booking: booking });
   } catch (error) {
     res.status(500).json({ message: 'Failed to cancel reservation', error: error.message });
   }
