@@ -1,40 +1,77 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const app = express();
 
 // User registration
-
-exports.register = async (req, res) => {
+app.post('/api/register', async (req, res) => {
+  console.log(req.body); // Add this to debug
   try {
-    const { email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
-    // Check if the user already exists
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
     const newUser = new User({
+      name,
       email,
       password: hashedPassword,
-      role
     });
 
-    // Save the new user to the database
     await newUser.save();
 
-    // Respond with the user data
     res.status(201).json({
       message: 'User registered successfully',
       userId: newUser._id,
       role: newUser.role,
     });
   } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+exports.register = async (req, res) => {
+  console.log(req.body); // Add this to debug
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: 'User registered successfully',
+      userId: newUser._id,
+      role: newUser.role,
+    });
+  } catch (error) {
+    console.error(error.message);
     res.status(500).json({ error: error.message });
   }
 };

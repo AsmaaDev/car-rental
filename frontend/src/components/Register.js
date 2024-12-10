@@ -3,32 +3,41 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from './website/Header';
 import Footer from './website/Footer';
-import '../assets/home.css'; // Add custom styles here
+import '../assets/home.css';
 
 function Register() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(''); // Error message
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Frontend validation
+        if (!name || !email || !password) {
+            setMessage('All fields are required');
+            return;
+        }
+
         const userData = { name, email, password };
 
         try {
             const response = await axios.post('http://localhost:5000/api/register', userData);
-
+            
             if (response.status === 201) {
                 setMessage('Registration successful!');
-                // Navigate to the login page after successful registration
-                navigate('/login');
+                setTimeout(() => {
+                    navigate('/login'); // Redirect to login after successful registration
+                }, 2000);
             } else {
                 setMessage(response.data.message || 'Registration failed');
             }
         } catch (error) {
-            setMessage('An error occurred during registration');
+            // Display error message from the backend
+            const errorMessage = error.response?.data?.message || 'An error occurred during registration';
+            setMessage(errorMessage);
         }
     };
 
@@ -41,7 +50,8 @@ function Register() {
                         <div className="card shadow-lg rounded">
                             <div className="card-body">
                                 <h2 className="text-center mb-4">Register</h2>
-                                {message && <div className="alert alert-info">{message}</div>}
+                                {/* Display the error message */}
+                                {message && <div className={`alert alert-${message === 'Registration successful!' ? 'success' : 'danger'}`}>{message}</div>}
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-3">
                                         <label htmlFor="name" className="form-label">Name</label>
