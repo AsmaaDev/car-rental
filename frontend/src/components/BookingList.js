@@ -50,9 +50,7 @@ function BookingList() {
                   bookingsData.map((booking) => (
                     <tr key={booking._id}>
                       <td>
-                        {booking.vehicleId
-                          ? `${booking.vehicleId.make} ${booking.vehicleId.model}`
-                          : 'N/A'}
+                      {booking.vehicleId ? `${booking.vehicleId.make} / ${booking.vehicleId.model}` : 'Vehicle info not available'}
                       </td>
                       <td>{booking.userId ? booking.userId.name : 'N/A'}</td>
                       <td>

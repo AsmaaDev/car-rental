@@ -4,8 +4,9 @@ const Vehicle = require('../models/Vehicle');
 // List bookings
 exports.listReservations = async (req, res) => {
     try {
-      const bookings = await Booking.find(); // Fetch all bookings
-      res.status(200).json({ message: 'Bookings fetched successfully', bookings });
+      const bookings = await Booking.find()
+      .populate({ path: 'vehicleId', select: 'make model' }) // Populate vehicle details
+      .populate({ path: 'userId', select: 'name' });      res.status(200).json({ message: 'Bookings fetched successfully', bookings });
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch bookings', error: error.message });
     }
