@@ -51,7 +51,7 @@ function PaymentHistory() {
             <tr>
               <th>Booking ID</th>
               <th>Booking ID</th>
-              <th>customer ID</th>
+              <th>customer</th>
               <th>Amount</th>
               <th>Status</th>
               <th>Payment Date</th>
