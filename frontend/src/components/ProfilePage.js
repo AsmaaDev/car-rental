@@ -99,6 +99,26 @@ function ProfilePage() {
     }
   };
 
+  const handlePay = async (bookingId, amount) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/payments', {
+        bookingId,
+        amount,
+      });
+  
+      if (response.data.success) {
+        alert('Payment created successfully!');
+        fetchUserBookings(); // Refresh bookings to reflect payment status
+      } else {
+        alert('Failed to create payment: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      alert('An error occurred while processing the payment.');
+    }
+  };
+  
+
   // Function to handle reservation cancel
   const handleCancel = async (bookingId) => {
     try {
@@ -168,6 +188,7 @@ function ProfilePage() {
                       <td>{booking.totalPrice} USD</td>
                       <td>
                         <button className="btn btn-warning me-2" onClick={() => handleUpdate(booking)}>Edit</button>
+                        <button className="btn btn-success" onClick={() => handlePay(booking._id, booking.totalPrice)}>Pay</button>
                         <button className="btn btn-danger" onClick={() => handleCancel(booking._id)}>Cancel</button>
                       </td>
                     </tr>

@@ -3,6 +3,8 @@ const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 const vehicleController = require('../controllers/vehicleController');
 const bookingController = require('../controllers/bookingController');
+const PaymentController = require('../controllers/PaymentController');
+
 const router = express.Router();
 
 // users Routes
@@ -26,5 +28,15 @@ router.get('/bookings', bookingController.listReservations);
 router.post('/bookings', bookingController.createReservation);
 router.put('/bookings/:id', bookingController.updateReservation);
 router.put('/cancel-booking/:id', bookingController.cancelReservation);
+
+// Admin: List all payments
+router.get('/payments', PaymentController.listAllPayments);
+
+// Customer: Create a new payment
+router.post('/payments', PaymentController.createPayment);
+
+// Admin: Refund a payment
+router.put('/payments/:paymentId/refund', PaymentController.refundPayment);
+
 
 module.exports = router;

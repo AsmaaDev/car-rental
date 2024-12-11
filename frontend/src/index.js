@@ -9,10 +9,9 @@ import Admin from './components/AdminDashboard';
 import Vehicles from './components/VehicleList';
 import Bookings from './components/BookingList';
 import Users from './components/UsersList';
-import Payments from './components/PaymentPage';  
-import AdminPayments from './components/PaymentPage';  
-import 'bootstrap/dist/css/bootstrap.min.css';
+ import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/main.css';
+import PaymentHistory from './components/PaymentHistory';
 
 const App = () => {
   return (
@@ -30,9 +29,7 @@ const App = () => {
         <Route path="/admin/users" element={<Users />} />
         
         {/*  payment routes */}
-        <Route path="/payments" element={<Payments />} /> {/* User payment page */}
-        <Route path="/admin/payments" element={<AdminPayments />} /> {/* Admin payment list */}
-        {/* <Route path="/admin/payment/:id" element={<PaymentDetails />} /> Admin payment details */}
+         <Route path="/admin/payments" element={<PaymentHistory />} />  
       </Routes>
     </Router>
   );
