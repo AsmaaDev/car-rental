@@ -1,0 +1,34 @@
+[{
+  "_id": {
+    "$oid": "6759094ee41a216aa66f12e7"
+  },
+  "bookingId": {
+    "$oid": "6755c8c6c67540737bbb2869"
+  },
+  "userId": {
+    "$oid": "6752939d2b8758dc980734b3"
+  },
+  "status": "confirmed",
+  "amount": 1200,
+  "createdAt": {
+    "$date": "2024-12-11T03:38:54.785Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67590951e41a216aa66f12ec"
+  },
+  "bookingId": {
+    "$oid": "6757d904ab67055e89384ad3"
+  },
+  "userId": {
+    "$oid": "6752939d2b8758dc980734b3"
+  },
+  "status": "pending",
+  "amount": 540,
+  "createdAt": {
+    "$date": "2024-12-11T03:38:57.862Z"
+  },
+  "__v": 0
+}]
